@@ -41,15 +41,15 @@ def create_dico(file_path):
     
     
     
-# recuperation des fichiers textes 
-#################### attention, Path est à modifier ################################################
+# Importing the text files
+#################### Warning, 'path' is to be changed ################################################
 path = "/Users/redabelhaj/Desktop/PI/testfiles/test"
 liste_dicos = []
 for i in range(1,6):
     file_path = path + str(i)+ ".txt"
     liste_dicos.append(create_dico(file_path))
 
-############# pré traitement 
+############# pre-process 
 
 
 
@@ -66,7 +66,7 @@ def pre_process_1(dico):
     if sum_min>p:
         return ("Pas de solution pour cette instance")
         
-    # recherche des indices impossibles
+    # search for impossible indexex
     for i in range(N):
         sum_except_i=sum_min-min_k_pk1n[i]
         for k in range(K):
@@ -76,7 +76,7 @@ def pre_process_1(dico):
                     R[i][k,m]=-1
     
 
-### Lemme 1
+### Lemma 1
 
 
 
@@ -97,7 +97,7 @@ def lemme_1(dico):
         
         
         
-        # coeur de l'algorithme
+        # heart of the algorithm
         r_current = R[i][p1[0][0]]
         for l in range(1,K*M):
             if R[i][p1[l][0]]<= r_current:
@@ -121,7 +121,7 @@ def lemme_1_naive(dico):
                                 R[i][kp,mp]=-1
 
 
-## Lemme 2
+## Lemma 2
 
 
 
@@ -142,7 +142,7 @@ def lemme_2(dico):
         p1=np.sort(p1,order='value')
         
         
-        # recherche de l'indice ou il n'y a plus de valeurs a ne pas considerer (-1)
+        # search of indexes where there is nothing more to consider (-1)
         l=0
         while p1[l][1]==-1:
             l+=1
@@ -161,7 +161,7 @@ def lemme_2(dico):
 
 
 
-## pre traitement et application des deux lemmes
+## pre-process and application of the 2 lemma
 
 def pre_process_tot(dico):
     ret = pre_process_1(dico)
@@ -172,7 +172,7 @@ def pre_process_tot(dico):
 
 
 
-## ratio des elements qu'on ne considere plus 
+## ratio of elements that should not be considered anymore
 
 
 def removed_ratio(dico):
@@ -185,7 +185,7 @@ def removed_ratio(dico):
                     count +=1
     return count/(N*K*M)
 
-## algorithme glouton
+## Greedy algorithm
 
 
 
@@ -219,13 +219,13 @@ def greedy_solve(dico):
     E = np.array(E, dtype = dtype)
     E = np.sort(E, order = 'value')
         
-    # initialisation de la puissance utilisée
+    # Initialization of the power used
     power = 0
     for i in range(N):
         power += P[i][X[i]]    
     
     
-    # coeur de l'algorithme
+    # Hearth of the algorithm
 
     i = len(E)-1
     n_saturated = N*[False]
@@ -246,7 +246,7 @@ def greedy_solve(dico):
             else:
                 power += P[n][X[n]]
                 
-    # recontruction de la solution en matrice
+    # reconstruction of the solution matrix
 
     solution = [np.zeros((K,M)) for i in range(N)]
     for i in range(N):
@@ -255,7 +255,7 @@ def greedy_solve(dico):
     
 
 
-## conversion des formats d'instances
+## conversion to the expected format
     
 
 
@@ -296,7 +296,7 @@ def linear_opt(dico):
     b_eq = np.ones(N) 
     bounds = (0,1)
     
-    # calcul de x sous forme de liste
+    # Putting the x in a list format
     
     x_array =linprog(c,A_ub = A_ub, b_ub = b_ub, A_eq =A_eq, b_eq = b_eq, bounds = bounds).x
     
@@ -306,7 +306,7 @@ def linear_opt(dico):
     
 
 
-## comparaisons de l'algorithlm glouton et de l'optimal
+## comparison of the greedy algorithm and the optimal one
 
 
 
@@ -356,7 +356,7 @@ def time_diff(dico):
 
 
 
-## algorithme utilisant la programmation dynamique
+## algorithm using dynamic algorithm
 
 
 
@@ -372,7 +372,7 @@ def dynamic(dico):
     for i in range(N+1):
         T[0,i] = 0
     
-    # calcul des valeurs T et des indices intermediaires l 
+    # computing the T value
             
     l =[[0 for i in range(N)] for j in range(pt)]
     for i in range(1,N+1):
@@ -387,7 +387,7 @@ def dynamic(dico):
                             
             T[q,i] = maxi
     
-    # reconstruction de la solution en remontant de la fin
+    # reconstruction of the solution
     
     solution = [l[pt-1][ N-1]]
     i=1
@@ -399,7 +399,7 @@ def dynamic(dico):
         solution.append(l[puissance-1][N-i-1])
         i+=1
         
-    # renvoi du résultat sous forme de matrice
+    # Creating the result in a matrix format
     resultat = [np.zeros((K,M)) for i in range(N)]
     for i in range(N):
         resultat[i][solution[N-1-i]] = 1
