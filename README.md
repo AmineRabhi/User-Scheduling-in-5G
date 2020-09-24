@@ -5,7 +5,7 @@ The project subject is in the file "subject"
 
 The data is stored in the file data 
 
-The code for each question is in the file code 
+The code is in the main code 
 
 The final report is in the file report 
 
